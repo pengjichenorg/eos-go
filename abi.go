@@ -9,6 +9,7 @@ import (
 // see: libraries/chain/contracts/abi_serializer.cpp:53...
 // see: libraries/chain/include/eosio/chain/contracts/types.hpp:100
 type ABI struct {
+	fitNodeos        bool
 	Version          string            `json:"version"`
 	Types            []ABIType         `json:"types,omitempty"`
 	Structs          []StructDef       `json:"structs,omitempty"`
@@ -17,7 +18,7 @@ type ABI struct {
 	RicardianClauses []ClausePair      `json:"ricardian_clauses,omitempty"`
 	ErrorMessages    []ABIErrorMessage `json:"error_messages,omitempty"`
 	Extensions       []*Extension      `json:"abi_extensions,omitempty"`
-	Variants         []VariantDef      `json:"variants,omitempty"`
+	Variants         []VariantDef      `json:"variants,omitempty" eos:"binary_extension"`
 }
 
 func NewABI(r io.Reader) (*ABI, error) {
@@ -29,8 +30,12 @@ func NewABI(r io.Reader) (*ABI, error) {
 	}
 
 	return abi, nil
-
 }
+
+func (a *ABI) SetFitNodeos(v bool) {
+	a.fitNodeos = v
+}
+
 func (a *ABI) ActionForName(name ActionName) *ActionDef {
 	for _, a := range a.Actions {
 		if a.Name == name {
